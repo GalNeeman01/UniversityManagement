@@ -53,6 +53,7 @@ public class UniversityConsoleMenu
         }
     }
 
+    // Print options for actions:
     public void ShowMenuOptions()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -70,9 +71,10 @@ public class UniversityConsoleMenu
         Console.ResetColor();
     }
 
+    // Accept validated user input and add a student:
     public void AddStudent()
     {
-        Console.Write("Enter student id: ");
+        Console.Write("Enter student id (9 digits): ");
         string id = Validations.GetValidId(Console.ReadLine()!, _university);
 
         Console.Write("Enter student name: ");
@@ -88,9 +90,10 @@ public class UniversityConsoleMenu
         _university.AddPerson(new Student(id, name, age, GPA));
     }
 
+    // Accept validated user input and add a professor:
     public void AddProfessor()
     {
-        Console.Write("Enter professor id: ");
+        Console.Write("Enter professor id (9 digits): ");
         string id = Validations.GetValidId(Console.ReadLine()!, _university);
 
         Console.Write("Enter professor name: ");
@@ -106,47 +109,37 @@ public class UniversityConsoleMenu
         _university.AddPerson(new Professor(id, name, age, salary));
     }
 
+    // Accept validated user input and enroll a student for a course:
     public void EnrollStudent()
     {
-        Console.Write("Enter student ID: ");
+        Console.Write("Enter student id (9 digits): ");
         string id = Validations.GetValidIdFormat(Console.ReadLine()!);
 
-        Person? student = _university.FindPerson(id);
+        Student student = Validations.GetValidStudentById(id, _university);
 
-        if (student == null)
-            throw new Exception("Bitch does not exist");
-
-        if (student is not Student)
-            throw new Exception("Bitch is not a student");
-
-        Console.Write("Enter course to enroll in: ");
+        Console.Write("Enter course to enroll for: ");
         string course = Validations.GetValidCourseName(Console.ReadLine()!);
 
-        if (!((Student)student).EnrollCourse(course))
-            throw new Exception("Bitch is already enrolled!");
-
-        Messages.DisplaySuccessMessage($"Student successfully enrolled for course {course}");
+        if (!student.EnrollCourse(course)) // Returns false if student is already enrolled for this course
+            Messages.DisplayErrorMessage($"This student is already enrolled for course '{course}'");
+        else
+            Messages.DisplaySuccessMessage($"Student successfully enrolled for course {course}");
     }
 
+    // Accept validated user input and assign a subject to a professor:
     public void AssignSubject()
     {
-        Console.Write("Enter Professor ID: ");
+        Console.Write("Enter Professor id (9 digits): ");
         string id = Validations.GetValidIdFormat(Console.ReadLine()!);
 
-        Person? professor = _university.FindPerson(id);
-
-        if (professor == null)
-            throw new Exception("Bitch does not exist");
-
-        if (professor is not Professor)
-            throw new Exception("Bitch does not exist");
+        Professor professor = Validations.GetValidProfessorById(id, _university);
 
         Console.Write("Enter subject to assign: ");
-        string course = Console.ReadLine()!;
+        string subject = Console.ReadLine()!;
 
-        if (!((Professor)professor).AssignSubject(course))
-            throw new Exception("Bitch already has subject");
-
-        Messages.DisplaySuccessMessage("Successfully assigned subject.");
+        if (!professor.AssignSubject(subject)) // Returns false if subject is already assigned to this professor
+            Messages.DisplayErrorMessage($"This professor is already assigned for subject '{subject}'");
+        else
+            Messages.DisplaySuccessMessage("Successfully assigned subject.");
     }
 }

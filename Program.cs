@@ -6,6 +6,7 @@ internal class Program
     {
         try
         {
+            // Start interactable menu:
             UniversityConsoleMenu menu = new UniversityConsoleMenu(GetSeededUni());
 
             menu.RunMenu();
@@ -16,6 +17,7 @@ internal class Program
         }
     }
 
+    // Returns a University instance with data.
     public static University GetSeededUni()
     {
         Student s1 = new Student("111111111", "bart simpson", 23, 3.2);
